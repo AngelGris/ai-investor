@@ -1,0 +1,14 @@
+[project]
+name = "ai-investor"
+version = "0.1.0"
+description = "AI Agents for stocks trading for educational porpuses"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.4.0",
+    "openai>=2.14.0",
+    "pandas>=2.3.3",
+    "pre-commit>=4.5.1",
+    "pydantic>=2.12.5",
+    "python-dotenv>=1.2.1",
+]
