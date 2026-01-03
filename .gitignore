@@ -14,3 +14,5 @@ uv.lock
 .pytest_cache/
 
 .env
+
+function_tool_cache/

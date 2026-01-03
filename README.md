@@ -3,7 +3,9 @@
 `ai-investor` is a Python project that uses AI agents to analyze stocks based on **fundamental information**.
 This learning project focuses on building structured, typed AI agents that produce reliable outputs.
 
-The first agent implemented is **FundamentalScout**, which takes a company's financial summary and recent news to generate a structured fundamental thesis, including bull/bear cases, confidence, and expected horizon.
+The first agent implemented is **FundamentalScout**, which uses search engine tools (Brave search) to get the company's financial summary and recent news to generate a structured fundamental thesis, including bull/bear cases, confidence, and expected horizon.
+
+The Search engine tool uses a cache to keep previous results and avoid redundant API requests.
 
 ---
 
@@ -19,11 +21,14 @@ The first agent implemented is **FundamentalScout**, which takes a company's fin
 ## Project Structure
 
     ai-investor/
-    ├── agents/
-    │   └── fundamental_scout/
-    │       ├── agent.py        # Main agent logic
-    │       ├── schema.py       # Pydantic output schema
-    │       └── prompt.py       # Prompt template
+    ├── ai_agents/
+    │   ├── fundamental_scout/
+    │   │   ├── agent.py        # Main agent logic
+    │   │   ├── schema.py       # Pydantic output schema
+    │   │   └── prompt.py       # Prompt template
+    │   └── tools/
+    │       ├── brave_search.py # Brave search engine tool
+    │       └── cache.py        # Cache functions using Diskcache for persistance
     ├── .env                    # API keys (not committed)
     ├── .gitignore
     ├── main.py                 # Example entrypoint
@@ -53,6 +58,7 @@ Create a .env file in the root folder:
 
 ```bash
 OPENAI_API_KEY=sk-xxxxxx
+BRAVE_API_KEY=xxxxxx
 ```
 
 4. **Install pre-commit hooks**

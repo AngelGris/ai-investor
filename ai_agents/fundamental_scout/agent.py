@@ -2,7 +2,10 @@ from agents import Agent, Runner
 
 from ai_agents.fundamental_scout.prompt import build_prompt
 from ai_agents.fundamental_scout.schema import FundamentalScoutOutput
-from ai_agents.tools.brave_search import get_company_overview, get_latest_news
+from ai_agents.tools.brave_search import (
+    cached_get_company_overview,
+    cached_get_latest_news,
+)
 
 
 async def run_fundamental_scout(company_name: str):
@@ -10,7 +13,7 @@ async def run_fundamental_scout(company_name: str):
     agent = Agent(
         name="Fundamental Scout",
         model="gpt-5-mini",
-        tools=[get_company_overview, get_latest_news],
+        tools=[cached_get_company_overview, cached_get_latest_news],
         output_type=FundamentalScoutOutput,
     )
 
