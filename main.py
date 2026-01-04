@@ -1,5 +1,6 @@
 import asyncio
 
+from agents import trace
 from dotenv import load_dotenv
 
 from ai_agents.decision_agent.agent import run_decision_agent
@@ -11,16 +12,17 @@ async def main():
 
     company_name = "NVIDIA"
 
-    fundamental_analysis = await run_fundamental_scout(
-        company_name=company_name,
-    )
+    with trace("ai-investor-session"):
+        fundamental_analysis = await run_fundamental_scout(
+            company_name=company_name,
+        )
 
-    decision_result = await run_decision_agent(
-        fundamental_analysis=fundamental_analysis,
-    )
-    decision_result_json = decision_result.model_dump_json(indent=2)
+        decision_result = await run_decision_agent(
+            fundamental_analysis=fundamental_analysis,
+        )
+        decision_result_json = decision_result.model_dump_json(indent=2)
 
-    print(decision_result_json)
+        print(decision_result_json)
 
 
 if __name__ == "__main__":
