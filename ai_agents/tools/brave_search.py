@@ -30,17 +30,17 @@ def brave_search(
         "x-subscription-token": BRAVE_API_KEY,
     }
 
+    if result_filter is None:
+        result_filter = ["web"]
+
     params = {
         "q": query,
         "count": limit,
         "result_filter": ",".join(result_filter),
-    }  # number of results
-
-    if result_filter is None:
-        result_filter = ["web"]
+    }
 
     sleep(1)  # To respect rate limits
-    print(f"Brave Search Query: {query}")
+    print(f"Brave Search Query: {query}", flush=True)
     response = requests.get(BRAVE_SEARCH_URL, headers=HEADERS, params=params)
     response.raise_for_status()
     data = response.json()

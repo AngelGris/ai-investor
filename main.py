@@ -2,6 +2,7 @@ import asyncio
 
 from dotenv import load_dotenv
 
+from ai_agents.decision_agent.agent import run_decision_agent
 from ai_agents.fundamental_scout.agent import run_fundamental_scout
 
 
@@ -10,11 +11,16 @@ async def main():
 
     company_name = "NVIDIA"
 
-    output = await run_fundamental_scout(
+    fundamental_analysis = await run_fundamental_scout(
         company_name=company_name,
     )
 
-    print(output.model_dump_json(indent=2))
+    decision_result = await run_decision_agent(
+        fundamental_analysis=fundamental_analysis,
+    )
+    decision_result_json = decision_result.model_dump_json(indent=2)
+
+    print(decision_result_json)
 
 
 if __name__ == "__main__":
