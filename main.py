@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from ai_agents.decision_agent.agent import run_decision_agent
 from ai_agents.fundamental_scout.agent import run_fundamental_scout
+from ai_agents.risk_analyst.agent import run_risk_analyst
 
 
 async def main():
@@ -16,13 +17,18 @@ async def main():
         fundamental_analysis = await run_fundamental_scout(
             company_name=company_name,
         )
+        print("Fundamental Analysis:\n", fundamental_analysis)
 
         decision_result = await run_decision_agent(
             fundamental_analysis=fundamental_analysis,
         )
-        decision_result_json = decision_result.model_dump_json(indent=2)
+        print("Investment Decision:\n", decision_result)
 
-        print(decision_result_json)
+        risk_analysis = await run_risk_analyst(
+            fundamental_analysis=fundamental_analysis,
+            investment_decision=decision_result,
+        )
+        print("Risk Analysis:\n", risk_analysis)
 
 
 if __name__ == "__main__":

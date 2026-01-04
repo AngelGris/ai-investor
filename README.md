@@ -15,6 +15,10 @@ The Search engine tool uses a cache to keep previous results and avoid redundant
 
 **DecisionAgent** uses the report from **FundamentalScout** as input and generates a report indicating wheather the selected company is a good asset to invest in or not.
 
+### Risk Analyst
+
+The **RiskAnalyst** take the output from the two previous agents and does a risk analysis for the proposed company, retrieving valuable information like risk level, or stop loss.
+
 ---
 
 ## Features
@@ -35,6 +39,10 @@ The Search engine tool uses a cache to keep previous results and avoid redundant
     │   │   ├── schema.py       # Pydantic output schema
     │   │   └── prompt.py       # Prompt template
     │   ├── fundamental_scout/
+    │   │   ├── agent.py
+    │   │   ├── schema.py
+    │   │   └── prompt.py
+    │   ├── risk_analyst/
     │   │   ├── agent.py
     │   │   ├── schema.py
     │   │   └── prompt.py
