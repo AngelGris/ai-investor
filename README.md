@@ -1,11 +1,19 @@
 # AI Investor
 
 `ai-investor` is a Python project that uses AI agents to analyze stocks based on **fundamental information**.
-This learning project focuses on building structured, typed AI agents that produce reliable outputs.
+This learning project focuses on building structured, typed AI agents that produce reliable outputs. **Should never be used as a tool for real investments.**
 
-The first agent implemented is **FundamentalScout**, which uses search engine tools (Brave search) to get the company's financial summary and recent news to generate a structured fundamental thesis, including bull/bear cases, confidence, and expected horizon.
+## Agents
+
+### Fundamental Scout
+
+The first agent implemented was **FundamentalScout**, which uses search engine tools (Brave search) to get the company's financial summary and recent news to generate a structured fundamental thesis, including bull/bear cases, confidence, and expected horizon.
 
 The Search engine tool uses a cache to keep previous results and avoid redundant API requests.
+
+### Decision Agent
+
+**DecisionAgent** uses the report from **FundamentalScout** as input and generates a report indicating wheather the selected company is a good asset to invest in or not.
 
 ---
 
@@ -22,10 +30,14 @@ The Search engine tool uses a cache to keep previous results and avoid redundant
 
     ai-investor/
     ├── ai_agents/
-    │   ├── fundamental_scout/
+    │   ├── decision_agent/
     │   │   ├── agent.py        # Main agent logic
     │   │   ├── schema.py       # Pydantic output schema
     │   │   └── prompt.py       # Prompt template
+    │   ├── fundamental_scout/
+    │   │   ├── agent.py
+    │   │   ├── schema.py
+    │   │   └── prompt.py
     │   └── tools/
     │       ├── brave_search.py # Brave search engine tool
     │       └── cache.py        # Cache functions using Diskcache for persistance
