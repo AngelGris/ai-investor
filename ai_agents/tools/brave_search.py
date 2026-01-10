@@ -4,8 +4,8 @@ import os
 import httpx
 from agents import function_tool
 
-from ai_agents.tools.brave_rate_limiter import brave_limiter
 from ai_agents.tools.cache import cached_function_tool
+from ai_agents.tools.rate_limiter import brave_limiter
 
 
 async def brave_search(
@@ -39,14 +39,13 @@ async def brave_search(
         "result_filter": ",".join(result_filter),
     }
 
-    print(f"Brave Search Query: {query}", flush=True)
-    async with brave_limiter:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(
-                BRAVE_SEARCH_URL,
-                headers=HEADERS,
-                params=params,
-            )
+    await brave_limiter.acquire()
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.get(
+            BRAVE_SEARCH_URL,
+            headers=HEADERS,
+            params=params,
+        )
     response.raise_for_status()
     data = response.json()
 

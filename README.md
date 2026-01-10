@@ -24,6 +24,11 @@ _The Search engine tool uses a cache to keep previous results and avoid redundan
 
 **DecisionAgent** uses the reports from **FundamentalScout** and **RiskAnalyst** as input and generates a report indicating wheather the selected company is a good asset to invest in or not.
 
+### Portfolio Allocation
+
+With the data provided for the different selected companies, **PortfolioAllocation** puts it all together and generates
+a report with companies to buy, and opportunities not to take, following some constrains.
+
 ---
 
 ## Features
@@ -53,12 +58,16 @@ _The Search engine tool uses a cache to keep previous results and avoid redundan
     │   │   ├── agent.py
     │   │   ├── schema.py
     │   │   └── prompt.py
+    │   ├── portfolio_allocation/
+    │   │   ├── agent.py
+    │   │   ├── schema.py
+    │   │   └── prompt.py
     │   ├── risk_analyst/
     │   │   ├── agent.py
     │   │   ├── schema.py
     │   │   └── prompt.py
     │   └── tools/
-    |       ├── brave_rate_limiter.py # Limits Brave search calls for async
+    |       ├── rate_limiter.py       # Limits Brave search calls for async
     │       ├── brave_search.py       # Brave search engine tool
     │       └── cache.py              # Cache functions using Diskcache for persistance
     ├── .env                          # API keys (not committed)
