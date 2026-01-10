@@ -1,4 +1,4 @@
-def build_prompt(fundamental_analysis, investment_decision) -> list[dict[str, str]]:
+def build_prompt(fundamental_analysis) -> list[dict[str, str]]:
     system_prompt = """
 You are a professional risk analyst managing capital for an active equity portfolio.
 
@@ -32,7 +32,6 @@ Your output must be structured, concrete, and practical.
 You are given the following inputs:
 
 1. FundamentalAnalysis
-2. InvestmentDecision
 
 Using ONLY this information, produce a RiskProfile for this investment.
 
@@ -45,9 +44,6 @@ Consider:
 
 FundamentalAnalysis:
 {fundamental_analysis}
-
-InvestmentDecision:
-{investment_decision}
 """
 
     return [

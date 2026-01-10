@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def build_prompt(company_name: str) -> list[dict[str, str]]:
+def build_prompt(ticker: str, company_name: str) -> list[dict[str, str]]:
     today = datetime.now().strftime("%Y-%m-%d")
 
     system_prompt = """
@@ -31,7 +31,7 @@ Be factual, natural, and explicit about uncertainties.
     user_prompt = f"""
 Today is {today}.
 
-Analyze {company_name} from a fundamental perspective.
+Analyze {company_name} [{ticker}] from a fundamental perspective.
 """
 
     return [

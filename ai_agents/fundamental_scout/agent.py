@@ -8,8 +8,8 @@ from ai_agents.tools.brave_search import (
 )
 
 
-async def run_fundamental_scout(company_name: str):
-    prompt = build_prompt(company_name=company_name)
+async def run_fundamental_scout(ticker: str, company_name: str):
+    prompt = build_prompt(ticker=ticker, company_name=company_name)
     agent = Agent(
         name="Fundamental Scout",
         model="gpt-5-mini",

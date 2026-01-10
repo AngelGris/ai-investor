@@ -1,4 +1,4 @@
-def build_prompt(fundamental_analysis) -> list[dict[str, str]]:
+def build_prompt(fundamental_analysis, risk_analysis) -> list[dict[str, str]]:
     system_prompt = """
 You are an investment decision agent.
 
@@ -14,10 +14,13 @@ Rules:
 - Prefer clarity over verbosity.
 """
     user_prompt = f"""
-Given the following FundamentalAnalysis, produce an InvestmentDecision.
+Given the following FundamentalAnalysis and RiskAnalysis, produce an InvestmentDecision.
 
 FundamentalAnalysis:
 {fundamental_analysis}
+
+RiskAnalysis:
+{risk_analysis}
 """
 
     return [

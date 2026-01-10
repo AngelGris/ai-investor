@@ -7,6 +7,7 @@ class FundamentalScoutOutput(BaseModel):
     company_name: str = Field(
         ..., description="The name of the company being analyzed."
     )
+    ticker: str = Field(..., description="The stock ticker symbol.")
     thesis: str = Field(
         ..., description="Concise fundamental thesis (3 to 5 sentences)."
     )

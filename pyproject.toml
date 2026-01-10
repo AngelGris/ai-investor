@@ -5,7 +5,9 @@ description = "AI Agents for stocks trading for educational porpuses"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aiolimiter>=1.2.1",
     "diskcache>=5.6.3",
+    "httpx>=0.28.1",
     "numpy>=2.4.0",
     "openai>=2.14.0",
     "openai-agents>=0.6.4",
