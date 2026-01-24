@@ -8,10 +8,16 @@ from ai_agents.fundamental_scout.agent import run_fundamental_scout
 from ai_agents.opportunity_scout.agent import run_opportunity_scout
 from ai_agents.portfolio_allocation.agent import run_portfolio_allocation
 from ai_agents.risk_analyst.agent import run_risk_analyst
+from execution.simulator import ExecutionSimulator
+from market_data.provider import MarketDataProvider
+from persistence.database import init_db
+from persistence.portfolio_repo import PortfolioRepository
+from persistence.trade_repo import TradeRepository
 
 
 async def main():
     load_dotenv()
+    init_db()
 
     universe_name = "NASDAQ-100"
     universe = [
@@ -50,7 +56,22 @@ async def main():
                 result["investment_decision"] for result in pipeline_results
             ],
         )
-        print("Final Portfolio Allocation:\n", portfolio_allocation)
+
+    data_provider = MarketDataProvider()
+    simulator = ExecutionSimulator(
+        market_data_provider=data_provider,
+        commission_per_trade=4.0,
+    )
+    portfolio_repo = PortfolioRepository()
+    execution_results = await simulator.execute_allocation(
+        allocation=portfolio_allocation,
+        portfolio_state=portfolio_repo.load(),
+    )
+    portfolio_repo.save(
+        state=execution_results.portfolio_state, reason="allocation_execution"
+    )
+    TradeRepository.save_many(execution_results.trades)
+    await data_provider.close()
 
 
 async def run_company_pipeline(ticker: str, company_name: str):
