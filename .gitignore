@@ -19,3 +19,4 @@ function_tool_cache/
 
 *.log
 portfolio.db
+portfolio.db-journal
