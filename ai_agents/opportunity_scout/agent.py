@@ -8,11 +8,19 @@ from ai_agents.tools.brave_search import cached_get_search_results
 
 
 async def run_opportunity_scout(
-    universe_name: str, ticker_list: List[str], max_candidates: int = 10
+    universe_name: str,
+    ticker_list: List[str],
+    portfolio_tickers: List[str],
+    portfolio_value: float,
+    cash_available: float,
+    max_candidates: int = 10,
 ):
     prompt = build_prompt(
         universe_name=universe_name,
         ticker_list=ticker_list,
+        portfolio_tickers=portfolio_tickers,
+        portfolio_value=portfolio_value,
+        cash_avilable=cash_available,
         max_candidates=max_candidates,
     )
     agent = Agent(

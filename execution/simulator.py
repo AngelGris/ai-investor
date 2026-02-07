@@ -175,6 +175,7 @@ class ExecutionSimulator:
                     avg_price=(cost + self.commission) / raw_quantity,
                     stop_loss_pct=target.stop_loss_pct,
                     unrealized_pnl=0.0,
+                    allocation_pct=target.allocation_pct,
                 )
 
         portfolio_state.cash = cash

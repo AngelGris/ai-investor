@@ -16,3 +16,6 @@ uv.lock
 .env
 
 function_tool_cache/
+
+*.log
+portfolio.db

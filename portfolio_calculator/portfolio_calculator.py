@@ -3,8 +3,8 @@ from portfolio_calculator.dataclasses import PortfolioMetrics, PositionMetrics
 
 
 class PortfolioCalculator:
+    @staticmethod
     def calculate(
-        self,
         state: PortfolioState,
         prices: dict[str, float],
     ) -> PortfolioMetrics:
@@ -20,8 +20,8 @@ class PortfolioCalculator:
                 raise ValueError(f"Missing price for ticker {ticker}")
 
             price = prices[ticker]
-            market_value = position.quantity * price
-            unrealized_pnl = (price - position.avg_price) * position.quantity
+            market_value = position.quantity * price.price
+            unrealized_pnl = (price.price - position.avg_price) * position.quantity
 
             position_values[ticker] = market_value
             position_pnls[ticker] = unrealized_pnl

@@ -12,6 +12,9 @@ from ai_agents.risk_analyst.schema import RiskProfile
 
 
 async def run_portfolio_allocation(
+    total_portfolio_value: float,
+    current_positions: list[str],
+    available_cash: float,
     risk_profiles: List[RiskProfile],
     investment_decisions: List[InvestmentDecisionOutput],
 ):
@@ -23,6 +26,9 @@ async def run_portfolio_allocation(
 
     prompt = build_prompt(
         constraints=constraints,
+        total_portfolio_value=total_portfolio_value,
+        current_positions=current_positions,
+        available_cash=available_cash,
         risk_analysis=risk_profiles,
         investment_decisions=investment_decisions,
     )

@@ -13,6 +13,7 @@ from market_data.provider import MarketDataProvider
 from persistence.database import init_db
 from persistence.portfolio_repo import PortfolioRepository
 from persistence.trade_repo import TradeRepository
+from portfolio_calculator.portfolio_calculator import PortfolioCalculator
 
 
 async def main():
@@ -22,6 +23,12 @@ async def main():
     market_data_provider = MarketDataProvider()
     portfolio_repo = PortfolioRepository()
     current_portfolio = portfolio_repo.load()
+    portfolio_metrics = PortfolioCalculator.calculate(
+        state=current_portfolio,
+        prices=await market_data_provider.get_market_quotes(
+            list(current_portfolio.positions.keys())
+        ),
+    )
 
     universe_name = "NASDAQ-100"
     universe = [
@@ -41,6 +48,9 @@ async def main():
         opportunity_results = await run_opportunity_scout(
             universe_name=universe_name,
             ticker_list=universe,
+            portfolio_tickers=list(current_portfolio.positions.keys()),
+            portfolio_value=portfolio_metrics.total_value,
+            cash_available=current_portfolio.cash,
             max_candidates=3,
         )
 
@@ -56,6 +66,9 @@ async def main():
         pipeline_results = await asyncio.gather(*pipelines)
 
         portfolio_allocation = await run_portfolio_allocation(
+            total_portfolio_value=portfolio_metrics.total_value,
+            current_positions=list(current_portfolio.positions.keys()),
+            available_cash=current_portfolio.cash,
             risk_profiles=[result["risk_analysis"] for result in pipeline_results],
             investment_decisions=[
                 result["investment_decision"] for result in pipeline_results

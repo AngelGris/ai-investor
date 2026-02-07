@@ -83,7 +83,7 @@ class MarketDataProvider:
             )
         return quotes
 
-    async def get_market_quotes(self, tickers: List[str]) -> List[MarketQuote]:
+    async def get_market_quotes(self, tickers: List[str]) -> dict[MarketQuote]:
         quotes = {}
         for ticker in tickers:
             ticker = ticker.upper()

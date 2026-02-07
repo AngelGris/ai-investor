@@ -2,13 +2,19 @@ from ai_agents.portfolio_allocation.schema import PortfolioConstraints
 
 
 def build_prompt(
-    constraints: PortfolioConstraints, risk_analysis, investment_decisions
+    constraints: PortfolioConstraints,
+    total_portfolio_value: float,
+    current_positions: list[str],
+    available_cash: float,
+    risk_analysis,
+    investment_decisions,
 ) -> list[dict[str, str]]:
     system_prompt = """
 You are a portfolio allocation agent managing capital for an active equity portfolio.
 
 Your role is to convert multiple independent investment evaluations into a single,
-coherent portfolio allocation plan.
+coherent portfolio allocation plan and to determine whether and how capital should be allocated
+to a proposed investment opportunity.
 
 The InvestmentDecision represents a synthesized judgment.
 The RiskAnalysis represents binding constraints.
@@ -31,6 +37,21 @@ Guiding principles:
 - Not every BUY deserves capital
 - Portfolio-level risk matters more than individual ideas
 - Concentration risk must be explicitly identified
+- Determine allocation in absolute EUR terms first.
+- Percentages are derived AFTER the allocation is chosen.
+- Allocation must be meaningful relative to total portfolio size.
+- For portfolios below 10,000 EUR:
+  - Concentrated positions (10–25%) are acceptable if conviction is high
+  - Prefer fewer positions over dilution
+- For portfolios above 15,000 EUR:
+  - Gradually transition to percentage-based diversification logic
+
+You will recieve:
+- Total portfolio value (EUR)
+- Current positions (EUR)
+- Available cash (EUR)
+- Minimum meaningful position size is 700 EUR
+- Proposed opportunity details (thesis, conviction, horizon)
 
 You must:
 - Decide which opportunities receive capital
@@ -38,12 +59,16 @@ You must:
 - Keep appropriate cash reserves
 - Identify portfolio-level risks and concentrations
 - Explicitly reject opportunities that do not fit constraints
+- If cash is insufficient for a meaningful position, recommend no action or
+  suggest replacing an existing position
 
 You must NOT:
 - Recompute stop-losses or risk metrics
 - Increase position sizes beyond risk recommendations
 - Optimize returns mathematically
 - Use vague or non-actionable language
+- Recommend opening a position smaller than the minimum meaningful size.
+- Create positions that cannot materially affect portfolio performance.
 
 Transaction cost awareness:
 
@@ -73,6 +98,10 @@ Portfolio constraints:
 - Maximum number of positions: {constraints.max_positions}
 - Maximum allocation per position: {constraints.max_position_pct}%
 - Target cash buffer: {constraints.min_cash_pct}% minimum
+- Minimum meaningful position size: 700 EUR
+- Total portfolio value: {total_portfolio_value} EUR
+- Current positions: {','.join(current_positions)}
+- Available cash: {available_cash} EUR
 - Strategy profile: short-term aggressive
 
 Investment inputs:
