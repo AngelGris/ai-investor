@@ -36,7 +36,8 @@ class PortfolioRepository:
                 quantity=p["quantity"],
                 avg_price=p["avg_price"],
                 stop_loss_pct=p["stop_loss_pct"],
-                unrealized_pnl=0.0,
+                unrealized_pnl=None,
+                allocation_pct=None,
             )
 
         conn.close()

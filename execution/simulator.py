@@ -48,9 +48,10 @@ class ExecutionSimulator:
 
         # Fetch prices once per ticker
         prices = {}
-        for ticker in target_allocations.keys():
-            quote = await self.market_data_provider.get_market_quote(ticker)
-            prices[ticker] = quote.price
+        quotes = await self.market_data_provider.get_market_quotes(
+            list(target_allocations.keys())
+        )
+        prices = {q: quotes[q].price for q in quotes}
 
         # SELL phase (allocation-driven)
         for ticker, position in list(portfolio_state.positions.items()):
@@ -240,9 +241,11 @@ class ExecutionSimulator:
         """
         value = portfolio_state.cash
 
+        quotes = await self.market_data_provider.get_market_quotes(
+            list(portfolio_state.positions.keys())
+        )
         for position in portfolio_state.positions.values():
-            quote = await self.market_data_provider.get_market_quote(position.ticker)
-            value += position.quantity * quote.price
+            value += position.quantity * quotes[position.ticker].price
 
         return value
 

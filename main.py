@@ -19,6 +19,10 @@ async def main():
     load_dotenv()
     init_db()
 
+    market_data_provider = MarketDataProvider()
+    portfolio_repo = PortfolioRepository()
+    current_portfolio = portfolio_repo.load()
+
     universe_name = "NASDAQ-100"
     universe = [
         "AAPL",
@@ -44,11 +48,12 @@ async def main():
             run_company_pipeline(
                 ticker=candidate.ticker,
                 company_name=candidate.company_name,
+                portfolio=current_portfolio,
             )
             for candidate in opportunity_results.candidates
         ]
 
-        pipeline_results = await asyncio.gather(*pipelines, return_exceptions=True)
+        pipeline_results = await asyncio.gather(*pipelines)
 
         portfolio_allocation = await run_portfolio_allocation(
             risk_profiles=[result["risk_analysis"] for result in pipeline_results],
@@ -57,24 +62,23 @@ async def main():
             ],
         )
 
-    data_provider = MarketDataProvider()
     simulator = ExecutionSimulator(
-        market_data_provider=data_provider,
+        market_data_provider=market_data_provider,
         commission_per_trade=4.0,
     )
-    portfolio_repo = PortfolioRepository()
+
     execution_results = await simulator.execute_allocation(
         allocation=portfolio_allocation,
-        portfolio_state=portfolio_repo.load(),
+        portfolio_state=current_portfolio,
     )
     portfolio_repo.save(
         state=execution_results.portfolio_state, reason="allocation_execution"
     )
     TradeRepository.save_many(execution_results.trades)
-    await data_provider.close()
+    await market_data_provider.close()
 
 
-async def run_company_pipeline(ticker: str, company_name: str):
+async def run_company_pipeline(ticker: str, company_name: str, portfolio: dict):
     with custom_span(f"pipeline-candidate-{ticker}"):
         fundamental_analysis = await run_fundamental_scout(
             ticker=ticker,
@@ -86,8 +90,10 @@ async def run_company_pipeline(ticker: str, company_name: str):
         )
 
         decision_result = await run_decision_agent(
+            ticker=ticker,
             fundamental_analysis=fundamental_analysis,
             risk_analysis=risk_analysis,
+            portfolio=portfolio,
         )
 
     return {
