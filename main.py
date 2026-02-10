@@ -1,4 +1,5 @@
 import asyncio
+import random
 
 from agents import custom_span, trace
 from dotenv import load_dotenv
@@ -14,6 +15,7 @@ from persistence.database import init_db
 from persistence.portfolio_repo import PortfolioRepository
 from persistence.trade_repo import TradeRepository
 from portfolio_calculator.portfolio_calculator import PortfolioCalculator
+from universe.sp500 import load_sp500_tickers
 
 
 async def main():
@@ -30,23 +32,11 @@ async def main():
         ),
     )
 
-    universe_name = "NASDAQ-100"
-    universe = [
-        "AAPL",
-        "MSFT",
-        "NVDA",
-        "AMZN",
-        "META",
-        "TSLA",
-        "GOOGL",
-        "AMD",
-        "ASML",
-        "INTC",
-    ]
+    universe = load_sp500_tickers()
+    random.shuffle(universe)
 
     with trace("ai-investor-session"):
         opportunity_results = await run_opportunity_scout(
-            universe_name=universe_name,
             ticker_list=universe,
             portfolio_tickers=list(current_portfolio.positions.keys()),
             portfolio_value=portfolio_metrics.total_value,
@@ -59,6 +49,7 @@ async def main():
                 ticker=candidate.ticker,
                 company_name=candidate.company_name,
                 portfolio=current_portfolio,
+                portfolio_metrics=portfolio_metrics,
             )
             for candidate in opportunity_results.candidates
         ]
@@ -91,7 +82,9 @@ async def main():
     await market_data_provider.close()
 
 
-async def run_company_pipeline(ticker: str, company_name: str, portfolio: dict):
+async def run_company_pipeline(
+    ticker: str, company_name: str, portfolio: dict, portfolio_metrics
+) -> dict:
     with custom_span(f"pipeline-candidate-{ticker}"):
         fundamental_analysis = await run_fundamental_scout(
             ticker=ticker,
@@ -100,6 +93,7 @@ async def run_company_pipeline(ticker: str, company_name: str, portfolio: dict):
 
         risk_analysis = await run_risk_analyst(
             fundamental_analysis=fundamental_analysis,
+            portfolio_value=portfolio_metrics.total_value,
         )
 
         decision_result = await run_decision_agent(

@@ -3,7 +3,6 @@ from typing import List
 
 
 def build_prompt(
-    universe_name: str,
     ticker_list: List[str],
     portfolio_tickers: List[str],
     portfolio_value: float,
@@ -57,7 +56,7 @@ You have access to the following tools:
     - Returns a list of search results with 'title', 'url', 'description', and 'page_age'.
 """
     user_prompt = f"""
-Universe: {universe_name} ({len(ticker_list)} companies)
+Universe: {len(ticker_list)} companies
 Company tickers in universe: {', '.join(ticker_list)}
 Existing holdings: {', '.join(portfolio_tickers) if portfolio_tickers else 'None'}
 Portfolio value: {portfolio_value}
